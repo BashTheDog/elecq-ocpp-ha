@@ -1,0 +1,8 @@
+{
+  "name": "Elecq OCPP 2.0.1 Integration",
+  "content_in_root": false,
+  "domains": ["elecq_ocpp"],
+  "country": [],
+  "homeassistant": "2024.0.0",
+  "render_readme": true
+}
