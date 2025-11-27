@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Any
-
 import voluptuous as vol
 
 from homeassistant import config_entries
@@ -21,25 +19,18 @@ from .const import (
 
 
 class ElecqOcppConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Config flow for Elecq OCPP 2.0.1."""
+    """Handle a config flow for Elecq OCPP."""
 
     VERSION = 1
 
-    async def async_step_user(
-        self,
-        user_input: dict[str, Any] | None = None,
-    ) -> FlowResult:
-        """Handle the initial config step."""
+    async def async_step_user(self, user_input: dict | None = None) -> FlowResult:
         if user_input is not None:
-            await self.async_set_unique_id(DOMAIN)
-            self._abort_if_unique_id_configured()
-
             return self.async_create_entry(
-                title="Elecq AU101 OCPP",
+                title="Elecq AU101 Charger",
                 data=user_input,
             )
 
-        schema = vol.Schema(
+        data_schema = vol.Schema(
             {
                 vol.Required(CONF_PORT, default=DEFAULT_PORT): int,
                 vol.Required(CONF_ID_TOKEN, default=DEFAULT_ID_TOKEN): str,
@@ -48,7 +39,4 @@ class ElecqOcppConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             }
         )
 
-        return self.async_show_form(
-            step_id="user",
-            data_schema=schema,
-        )
+        return self.async_show_form(step_id="user", data_schema=data_schema)

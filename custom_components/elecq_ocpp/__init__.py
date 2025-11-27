@@ -9,7 +9,6 @@ from homeassistant.helpers.typing import ConfigType
 
 from .const import (
     DOMAIN,
-    PLATFORMS,
     CONF_PORT,
     CONF_ID_TOKEN,
     CONF_EVSE_ID,
@@ -19,9 +18,12 @@ from .ocpp_server import ElecqOcppManager
 
 _LOGGER = logging.getLogger(__name__)
 
+PLATFORMS: list[str] = ["sensor", "binary_sensor", "switch"]
+
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    """YAML setup (unused)."""
+    """Set up Elecq OCPP integration (YAML not used)."""
+    hass.data.setdefault(DOMAIN, {})
     return True
 
 
@@ -29,10 +31,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Elecq OCPP from a config entry."""
     hass.data.setdefault(DOMAIN, {})
 
-    port = entry.data[CONF_PORT]
-    id_token = entry.data[CONF_ID_TOKEN]
-    evse_id = entry.data[CONF_EVSE_ID]
-    connector_id = entry.data[CONF_CONNECTOR_ID]
+    port: int = entry.data[CONF_PORT]
+    id_token: str = entry.data[CONF_ID_TOKEN]
+    evse_id: int = entry.data[CONF_EVSE_ID]
+    connector_id: int = entry.data[CONF_CONNECTOR_ID]
 
     manager = ElecqOcppManager(
         hass=hass,
@@ -42,25 +44,31 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         connector_id=connector_id,
     )
 
-    await manager.async_start_server()
-
     hass.data[DOMAIN][entry.entry_id] = {
         "manager": manager,
     }
 
+    # Start the OCPP WebSocket server
+    hass.async_create_task(manager.async_start_server())
+
+    # Forward entry setup to platforms
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
-    _LOGGER.info("Elecq OCPP integration initialized on port %s", port)
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Handle removal of an entry."""
+    """Unload a config entry."""
+    data = hass.data[DOMAIN].get(entry.entry_id)
+    manager: ElecqOcppManager | None = None
+    if isinstance(data, dict):
+        manager = data.get("manager")
+
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
-    data = hass.data[DOMAIN].pop(entry.entry_id, None)
-    if data:
-        manager: ElecqOcppManager = data["manager"]
-        await manager.async_stop_server()
+    if unload_ok:
+        if manager is not None:
+            await manager.async_stop_server()
+        hass.data[DOMAIN].pop(entry.entry_id, None)
 
     return unload_ok

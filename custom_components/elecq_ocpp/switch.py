@@ -17,7 +17,6 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up Elecq OCPP switch from a config entry."""
     data = hass.data[DOMAIN][entry.entry_id]
     manager: ElecqOcppManager = data["manager"]
 
@@ -52,22 +51,16 @@ class ElecqChargingSwitch(SwitchEntity):
 
     @property
     def is_on(self) -> bool:
-        # Driven entirely by manager.state.charging
         return self._manager.state.charging
 
     @property
     def available(self) -> bool:
-        # Only available when:
-        #  - the charger is connected (OCPP session up), AND
-        #  - the EV is plugged in.
         st = self._manager.state
         return self._manager.is_available and st.plugged_in
 
     async def async_turn_on(self, **kwargs) -> None:
-        """Start charging – but only if EV is plugged in."""
         st = self._manager.state
 
-        # Extra safety: if someone calls service while unavailable
         if not st.plugged_in:
             raise HomeAssistantError(
                 "Please plug in the EV before starting charging."
@@ -75,27 +68,17 @@ class ElecqChargingSwitch(SwitchEntity):
 
         ok = await self._manager.async_request_start()
         if not ok:
-            # Keep UI in sync and notify via error toast
-            st.charging = False
             self.async_write_ha_state()
             raise HomeAssistantError(
                 "Charger did not accept remote start request."
             )
-
-        # OCPP events will keep state updated; just redraw
-        self.async_write_ha_state()
+        # On success, OCPP events will update state
 
     async def async_turn_off(self, **kwargs) -> None:
-        """Stop charging."""
-        st = self._manager.state
-
         ok = await self._manager.async_request_stop()
         if not ok:
-            # Don't lie about state if stop failed
             self.async_write_ha_state()
             raise HomeAssistantError(
                 "Charger did not accept remote stop request."
             )
-
-        st.charging = False
-        self.async_write_ha_state()
+        # On success, OCPP TransactionEvent(Ended) will update state

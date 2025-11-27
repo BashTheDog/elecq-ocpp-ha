@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from homeassistant.components.binary_sensor import (
-    BinarySensorDeviceClass,
     BinarySensorEntity,
+    BinarySensorDeviceClass,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -19,7 +19,6 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up Elecq OCPP binary sensors from a config entry."""
     data = hass.data[DOMAIN][entry.entry_id]
     manager: ElecqOcppManager = data["manager"]
 
@@ -30,19 +29,14 @@ async def async_setup_entry(
         model="AU101",
     )
 
-    async_add_entities(
-        [
-            ElecqPluggedInBinarySensor(manager, device_info),
-            ElecqChargingBinarySensor(manager, device_info),
-        ]
-    )
+    entities: list[BinarySensorEntity] = [
+        ElecqPluggedInBinarySensor(manager, device_info),
+        ElecqChargingBinarySensor(manager, device_info),
+    ]
+    async_add_entities(entities)
 
 
-class ElecqBaseBinarySensor(BinarySensorEntity):
-    """Base class for Elecq binary sensors."""
-
-    _attr_has_entity_name = True
-
+class _BaseElecqBinarySensor(BinarySensorEntity):
     def __init__(self, manager: ElecqOcppManager, device_info: DeviceInfo) -> None:
         self._manager = manager
         self._attr_device_info = device_info
@@ -56,7 +50,8 @@ class ElecqBaseBinarySensor(BinarySensorEntity):
         )
 
 
-class ElecqPluggedInBinarySensor(ElecqBaseBinarySensor):
+class ElecqPluggedInBinarySensor(_BaseElecqBinarySensor):
+    _attr_has_entity_name = True
     _attr_name = "Plugged In"
     _attr_unique_id = "elecq_au101_plugged_in"
     _attr_device_class = BinarySensorDeviceClass.PLUG
@@ -66,7 +61,8 @@ class ElecqPluggedInBinarySensor(ElecqBaseBinarySensor):
         return self._manager.state.plugged_in
 
 
-class ElecqChargingBinarySensor(ElecqBaseBinarySensor):
+class ElecqChargingBinarySensor(_BaseElecqBinarySensor):
+    _attr_has_entity_name = True
     _attr_name = "Charging"
     _attr_unique_id = "elecq_au101_charging"
     _attr_device_class = BinarySensorDeviceClass.BATTERY_CHARGING
