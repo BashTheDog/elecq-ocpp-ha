@@ -1,6 +1,8 @@
 # Elecq AU101 OCPP – Home Assistant Custom Integration
 
-![Elecq OCPP Badge](https://raw.githubusercontent.com/BashTheDog/elecq-ocpp-ha/main/assets/elecq_badge_square.png)
+<p>
+  <img src="https://raw.githubusercontent.com/BashTheDog/elecq-ocpp-ha/main/assets/elecq_badge_square.png" width="160" alt="Elecq Logo">
+</p>
 
 [![GitHub Release](https://img.shields.io/github/v/release/BashTheDog/elecq-ocpp-ha?style=for-the-badge)](https://github.com/BashTheDog/elecq-ocpp-ha/releases)
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-blue.svg?style=for-the-badge)](https://hacs.xyz/)
@@ -15,18 +17,20 @@ A Home Assistant integration for the **Elecq AU101** EV Charger using an embedde
 This integration provides:
 
 - Real-time **charger status**
-- EV **plugged-in** state
-- True **charging state** (`Charging`, `SuspendedEV`, `Idle`, etc.)
-- **Start/Stop charging** via OCPP
-- Accurate power + energy metrics
-- Grey-out switch behavior while waiting on charger responses
-- Fully local operation — no cloud
+- EV **plugged-in** detection
+- Detailed **charging state** (`Charging`, `SuspendedEV`, `Idle`, etc.)
+- **Start/Stop charging** with true OCPP commands
+- Accurate power and energy tracking
+- Greyed-out switch while waiting for charger responses
+- No cloud required — fully local
 
 ---
 
-# 🖼 Integration Logo
+# 🖼 Integration Logo (Smaller)
 
-![Integration Logo](https://raw.githubusercontent.com/BashTheDog/elecq-ocpp-ha/main/assets/elecq_badge_square.png)
+<p>
+  <img src="https://raw.githubusercontent.com/BashTheDog/elecq-ocpp-ha/main/assets/elecq_badge_square.png" width="160" alt="Elecq Logo">
+</p>
 
 ---
 
@@ -36,48 +40,47 @@ This integration provides:
 - Available / Occupied / Faulted / Unavailable
 
 ### 🔌 EV Plug Detection
-- Detects plug/unplug instantly  
-- Uses `stoppedReason: EVDisconnected` to confirm unplug
+- Instant plug/unplug recognition  
+- Uses `stoppedReason: EVDisconnected` for accuracy
 
 ### 🔋 Charging State
-- Charging  
-- EVConnected  
-- SuspendedEV → **Suspended by EV (possibly full)**  
-- Idle / Finished  
+- Real Charging
+- EVConnected
+- SuspendedEV → **Possibly fully charged**
+- Idle / Finished
 
-### ⚡ Energy Monitoring
+### ⚡ Energy Metrics
+- Real-time Power (kW)
+- Smoothed Power
 - Total Energy (kWh)
 - Session Energy
-- Real-time Power (kW)
-- Smoothed average Power
 
 ### 🆘 Smart Charging Switch
-- State reflects **actual charger**  
-- Greyed-out while awaiting OCPP response  
-- Rejects start/stop cleanly when EV full or unplugged  
+- Reflects *actual* charger state  
+- Grey-out while awaiting OCPP response  
+- Safe rejection when EV is full or unplugged  
 
 ---
 
 # 📦 Installation
 
-## Option A — HACS (Custom)
+## Option A — HACS (Custom Repository)
 
-1. Go to **HACS → Integrations**
-2. Select **Custom repositories**
-3. Add:
+1. Open **HACS → Integrations**
+2. Add custom repository:
 
-   ```
-   https://github.com/BashTheDog/elecq-ocpp-ha
-   ```
+```
+https://github.com/BashTheDog/elecq-ocpp-ha
+```
 
-4. Category: **Integration**
-5. Install & restart Home Assistant
+3. Select category: **Integration**
+4. Install & restart Home Assistant
 
 ---
 
 ## Option B — Manual Installation
 
-Copy the folder:
+Copy:
 
 ```
 custom_components/elecq_ocpp
@@ -95,26 +98,26 @@ Restart Home Assistant.
 
 # 🔧 Configuration
 
-Go to **Settings → Devices & Services → Add Integration → Elecq OCPP**
+Open **Settings → Devices & Services → Add Integration → Elecq OCPP**
 
 | Field | Meaning |
 |-------|---------|
-| **Port** | WebSocket server port (default `9006`) |
-| **ID Token** | Token used in RequestStartTransaction |
-| **EVSE ID** | Usually `1` |
-| **Connector ID** | Usually `1` |
+| Port | WebSocket port (default `9006`) |
+| ID Token | Used in RequestStartTransaction |
+| EVSE ID | Typically `1` |
+| Connector ID | Typically `1` |
 
 ---
 
-# 🔗 Elecq Charger Setup
+# 🔗 Elecq Charger OCPP Setup
 
-Set this in the Elecq app:
+In the Elecq mobile app, set:
 
 ```
-ws://<your-home-assistant-ip>:9006/AU101B2G00127D
+ws://<home-assistant-ip>:9006/AU101B2G00127D
 ```
 
-OCPP version: **2.0.1**
+OCPP Version: **2.0.1**
 
 ---
 
@@ -132,7 +135,7 @@ OCPP version: **2.0.1**
 - `binary_sensor.elecq_au101_plugged_in`
 - `binary_sensor.elecq_au101_charger_charging`
 
-### Switches
+### Switch
 - `switch.elecq_au101_charger_remote_charging`
 
 ---
@@ -146,9 +149,7 @@ cards:
     title: Elecq AU101
     entities:
       - entity: sensor.elecq_au101_status
-        name: Status
       - entity: sensor.elecq_au101_charging_state
-        name: Charging State
 
   - type: grid
     square: false
@@ -179,14 +180,12 @@ cards:
 git clone https://github.com/BashTheDog/elecq-ocpp-ha
 ```
 
-Pull requests welcome.
-
 ---
 
 # 🏷 Versioning
 
-- Semantic Versioning  
-- Version in `manifest.json` must match GitHub release tag  
+- Follows Semantic Versioning  
+- Version must match `manifest.json`  
 - Releases should follow `vX.Y.Z`
 
 ---
