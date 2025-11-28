@@ -1,15 +1,16 @@
 {
   "domain": "elecq_ocpp",
-  "name": "Elecq OCPP 2.0.1",
-  "version": "0.2.0",
-  "documentation": "https://github.com/bashthedog/elecq-ocpp-ha",
+  "name": "Elecq AU101 OCPP",
+  "version": "1.0.0",
+  "documentation": "https://github.com/bashthedog/elecq_ocpp#readme",
+  "issue_tracker": "https://github.com/bashthedog/elecq_ocpp/issues",
+  "dependencies": [],
+  "codeowners": ["@bashthedog"],
   "requirements": [
-    "ocpp>=0.25.0",
-    "websockets>=10.4"
+    "ocpp==0.23.1",
+    "websockets==12.0"
   ],
-  "codeowners": [
-    "@bashthedog"
-  ],
-  "config_flow": true,
-  "iot_class": "local_push"
+  "iot_class": "local_push",
+  "loggers": ["ocpp", "websockets", "custom_components.elecq_ocpp"],
+  "config_flow": true
 }
