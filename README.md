@@ -1,80 +1,89 @@
 # Elecq AU101 OCPP – Home Assistant Custom Integration
 
-![Elecq OCPP Badge](https://raw.githubusercontent.com/BashTheDog/elecq_ocpp_ha/main/assets/elecq_badge_square.png)
+![Elecq OCPP Badge](https://raw.githubusercontent.com/BashTheDog/elecq-ocpp-ha/main/assets/elecq_badge_square.png)
 
-[![GitHub Release](https://img.shields.io/github/v/release/BashTheDog/elecq_ocpp?style=for-the-badge)](https://github.com/BashTheDog/elecq_ocpp_ha/releases)
+[![GitHub Release](https://img.shields.io/github/v/release/BashTheDog/elecq-ocpp-ha?style=for-the-badge)](https://github.com/BashTheDog/elecq-ocpp-ha/releases)
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-blue.svg?style=for-the-badge)](https://hacs.xyz/)
-[![GitHub Stars](https://img.shields.io/github/stars/BashTheDog/elecq_ocpp?style=for-the-badge)](https://github.com/BashTheDog/elecq_ocpp_ha/stargazers)
+[![GitHub Stars](https://img.shields.io/github/stars/BashTheDog/elecq-ocpp-ha?style=for-the-badge)](https://github.com/BashTheDog/elecq-ocpp-ha/stargazers)
 
 ---
 
 # ⚡ Elecq AU101 OCPP Integration
 
-A modern Home Assistant integration for the **Elecq AU101** EV Charger using an **embedded OCPP 2.0.1 WebSocket server** written in Python.
+A Home Assistant integration for the **Elecq AU101** EV Charger using an embedded **OCPP 2.0.1 WebSocket server**.
 
-This integration communicates directly with the charger, providing:
+This integration provides:
 
-- Real-time **status**, **charging state**, and **energy metrics**
-- EV **plugged-in** detection
-- Fully local **start/stop charging control** using OCPP
-- Smooth, reliable charger state representation in Home Assistant
-- Accurate handling of full battery condition (`SuspendedEV`)  
-- Friendly & compact Lovelace card example
+- Real-time **charger status**
+- EV **plugged-in** state
+- True **charging state** (`Charging`, `SuspendedEV`, `Idle`, etc.)
+- **Start/Stop charging** via OCPP
+- Accurate power + energy metrics
+- Grey-out switch behavior while waiting on charger responses
+- Fully local operation — no cloud
 
 ---
 
 # 🖼 Integration Logo
 
-![Integration Logo](https://raw.githubusercontent.com/BashTheDog/elecq_ocpp_ha/main/assets/elecq_badge_square.png)
+![Integration Logo](https://raw.githubusercontent.com/BashTheDog/elecq-ocpp-ha/main/assets/elecq_badge_square.png)
 
 ---
 
 # 🚀 Features
 
-### 🟢 Real-time Charger State
-- Available  
-- Occupied  
-- Faulted  
-- Unavailable  
+### 🟢 Charger Status
+- Available / Occupied / Faulted / Unavailable
 
 ### 🔌 EV Plug Detection
-- Detects when your EV is connected/disconnected
-- Uses `EVDisconnected` stop events correctly
+- Detects plug/unplug instantly  
+- Uses `stoppedReason: EVDisconnected` to confirm unplug
 
-### 🔋 Charging State (OCPP)
+### 🔋 Charging State
 - Charging  
 - EVConnected  
-- SuspendedEV → **“Suspended by EV (possibly full)”**  
+- SuspendedEV → **Suspended by EV (possibly full)**  
 - Idle / Finished  
 
-### ⚡ Energy & Power Monitoring
-- Instantaneous power (kW)
-- Smoothed 5-sample average power
-- Total imported energy (kWh)
-- Per-session energy
+### ⚡ Energy Monitoring
+- Total Energy (kWh)
+- Session Energy
+- Real-time Power (kW)
+- Smoothed average Power
 
-### 🆘 Smart Remote Charging Switch
-- Switch reflects **actual** charger state (not optimistic)  
-- Greyed-out while waiting for charger response  
-- Rejects invalid start/stop calls safely
+### 🆘 Smart Charging Switch
+- State reflects **actual charger**  
+- Greyed-out while awaiting OCPP response  
+- Rejects start/stop cleanly when EV full or unplugged  
 
 ---
 
 # 📦 Installation
 
-## **HACS (Custom Repository)**
+## Option A — HACS (Custom)
 
-1. Open **HACS → Integrations**
-2. Add custom repository:
+1. Go to **HACS → Integrations**
+2. Select **Custom repositories**
+3. Add:
+
    ```
-   https://github.com/BashTheDog/elecq_ocpp
+   https://github.com/BashTheDog/elecq-ocpp-ha
    ```
-3. Category: **Integration**
-4. Install & restart Home Assistant
 
-## **Manual Install**
+4. Category: **Integration**
+5. Install & restart Home Assistant
 
-Copy `custom_components/elecq_ocpp` into:
+---
+
+## Option B — Manual Installation
+
+Copy the folder:
+
+```
+custom_components/elecq_ocpp
+```
+
+into:
 
 ```
 <config>/custom_components/elecq_ocpp/
@@ -88,21 +97,21 @@ Restart Home Assistant.
 
 Go to **Settings → Devices & Services → Add Integration → Elecq OCPP**
 
-| Field | Description |
-|-------|-------------|
-| **Port** | WebSocket port (default `9006`) |
-| **ID Token** | Token for transaction start (`ElecqAutoStart`) |
+| Field | Meaning |
+|-------|---------|
+| **Port** | WebSocket server port (default `9006`) |
+| **ID Token** | Token used in RequestStartTransaction |
 | **EVSE ID** | Usually `1` |
 | **Connector ID** | Usually `1` |
 
 ---
 
-# 🔗 Configure Your Elecq AU101
+# 🔗 Elecq Charger Setup
 
-Set OCPP server in the Elecq app:
+Set this in the Elecq app:
 
 ```
-ws://<home_assistant_ip>:9006/AU101B2G00127D
+ws://<your-home-assistant-ip>:9006/AU101B2G00127D
 ```
 
 OCPP version: **2.0.1**
@@ -124,7 +133,7 @@ OCPP version: **2.0.1**
 - `binary_sensor.elecq_au101_charger_charging`
 
 ### Switches
-- `switch.elecq_au101_remote_charging`
+- `switch.elecq_au101_charger_remote_charging`
 
 ---
 
@@ -137,7 +146,9 @@ cards:
     title: Elecq AU101
     entities:
       - entity: sensor.elecq_au101_status
+        name: Status
       - entity: sensor.elecq_au101_charging_state
+        name: Charging State
 
   - type: grid
     square: false
@@ -148,7 +159,7 @@ cards:
       - type: entity
         entity: binary_sensor.elecq_au101_charger_charging
       - type: entity
-        entity: switch.elecq_au101_remote_charging
+        entity: switch.elecq_au101_charger_remote_charging
 
   - type: grid
     square: false
@@ -165,18 +176,18 @@ cards:
 # 🛠 Development
 
 ```bash
-git clone https://github.com/BashTheDog/elecq_ocpp
+git clone https://github.com/BashTheDog/elecq-ocpp-ha
 ```
 
-Pull requests welcome!
+Pull requests welcome.
 
 ---
 
 # 🏷 Versioning
 
-- Semantic Versioning (`1.0.0`, `1.1.0`, etc.)
-- Version must match `manifest.json`
-- GitHub releases should follow `v1.x.x`
+- Semantic Versioning  
+- Version in `manifest.json` must match GitHub release tag  
+- Releases should follow `vX.Y.Z`
 
 ---
 
