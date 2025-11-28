@@ -37,6 +37,7 @@ async def async_setup_entry(
         ElecqEnergySensor(manager, device_info),
         ElecqSessionEnergySensor(manager, device_info),
         ElecqStatusSensor(manager, device_info),
+        ElecqChargingStateSensor(manager, device_info),  # 👈 NEW
     ]
     async_add_entities(entities)
 
@@ -108,6 +109,8 @@ class ElecqSessionEnergySensor(_BaseElecqSensor):
 
 
 class ElecqStatusSensor(_BaseElecqSensor):
+    """Connector / charger status (Available, Occupied, etc.)."""
+
     _attr_has_entity_name = True
     _attr_name = "Charger Status"
     _attr_unique_id = "elecq_au101_status"
@@ -115,3 +118,39 @@ class ElecqStatusSensor(_BaseElecqSensor):
     @property
     def native_value(self):
         return self._manager.state.last_status or "Unknown"
+
+
+class ElecqChargingStateSensor(_BaseElecqSensor):
+    """
+    Charging state as reported in TransactionEvent.transactionInfo.chargingState.
+
+    - Shows raw values like 'Charging', 'Idle', 'SuspendedEV', etc.
+    - For SuspendedEV (often EV fully charged) we show a friendlier label.
+    """
+
+    _attr_has_entity_name = True
+    _attr_name = "Info"
+    _attr_unique_id = "elecq_au101_charging_state"
+
+    @property
+    def native_value(self):
+        cs = self._manager.state.last_charging_state
+        if cs is None:
+            return "Unknown"
+
+        if cs == "SuspendedEV":
+            # Typically means the EV has paused charging itself (often because it's full)
+            return "Suspended by EV (possibly full)"
+
+        return cs
+
+    @property
+    def extra_state_attributes(self):
+        """Expose raw state for debugging/automation if desired."""
+        st = self._manager.state
+        attrs = {}
+        if st.last_charging_state is not None:
+            attrs["raw_charging_state"] = st.last_charging_state
+        if st.transaction_id is not None:
+            attrs["transaction_id"] = st.transaction_id
+        return attrs
