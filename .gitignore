@@ -22,3 +22,4 @@ secrets.yaml
 .gitattributes
 /custom_components/elecq_ocpp/__pycache__
 *.pyc
+/custom_components/elecq_ocpp/__pycache__
