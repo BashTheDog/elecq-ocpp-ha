@@ -23,3 +23,5 @@ secrets.yaml
 /custom_components/elecq_ocpp/__pycache__
 *.pyc
 /custom_components/elecq_ocpp/__pycache__
+/custom_components/elecq_ocpp.x
+custom_components/elecq_ocpp.zip
