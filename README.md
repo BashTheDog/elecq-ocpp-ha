@@ -1,10 +1,10 @@
 # Elecq AU101 OCPP – Home Assistant Custom Integration
 
-![Elecq OCPP Badge](https://raw.githubusercontent.com/BashTheDog/elecq_ocpp/main/assets/elecq_badge_square.png)
+![Elecq OCPP Badge](https://raw.githubusercontent.com/BashTheDog/elecq_ocpp_ha/main/assets/elecq_badge_square.png)
 
-[![GitHub Release](https://img.shields.io/github/v/release/BashTheDog/elecq_ocpp?style=for-the-badge)](https://github.com/BashTheDog/elecq_ocpp/releases)
+[![GitHub Release](https://img.shields.io/github/v/release/BashTheDog/elecq_ocpp?style=for-the-badge)](https://github.com/BashTheDog/elecq_ocpp_ha/releases)
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-blue.svg?style=for-the-badge)](https://hacs.xyz/)
-[![GitHub Stars](https://img.shields.io/github/stars/BashTheDog/elecq_ocpp?style=for-the-badge)](https://github.com/BashTheDog/elecq_ocpp/stargazers)
+[![GitHub Stars](https://img.shields.io/github/stars/BashTheDog/elecq_ocpp?style=for-the-badge)](https://github.com/BashTheDog/elecq_ocpp_ha/stargazers)
 
 ---
 
@@ -25,7 +25,7 @@ This integration communicates directly with the charger, providing:
 
 # 🖼 Integration Logo
 
-![Integration Logo](https://raw.githubusercontent.com/BashTheDog/elecq_ocpp/main/assets/elecq_badge_square.png)
+![Integration Logo](https://raw.githubusercontent.com/BashTheDog/elecq_ocpp_ha/main/assets/elecq_badge_square.png)
 
 ---
 
