@@ -12,7 +12,7 @@
 
 # ⚡ Elecq AU101/AE106 OCPP Integration
 
-A Home Assistant integration for the **Elecq AU101/AE106** EV Charger using an embedded **OCPP 2.0.1 WebSocket server**.
+A Home Assistant integration for the **Elecq AU101/AE106** EV Charger using an embedded **OCPP 2.0.1 WebSocket server**.  This project was developed for AU101, but a user report indicates it also works on AE106.
 
 This integration provides:
 
