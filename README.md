@@ -1,4 +1,4 @@
-# Elecq AU101 OCPP – Home Assistant Custom Integration
+# Elecq AU101/AE106 OCPP – Home Assistant Custom Integration
 
 <p>
   <img src="https://raw.githubusercontent.com/BashTheDog/elecq-ocpp-ha/main/assets/elecq_badge_square.png" width="160" alt="Elecq Logo">
@@ -10,9 +10,9 @@
 
 ---
 
-# ⚡ Elecq AU101 OCPP Integration
+# ⚡ Elecq AU101/AE106 OCPP Integration
 
-A Home Assistant integration for the **Elecq AU101** EV Charger using an embedded **OCPP 2.0.1 WebSocket server**.
+A Home Assistant integration for the **Elecq AU101/AE106** EV Charger using an embedded **OCPP 2.0.1 WebSocket server**.
 
 This integration provides:
 
@@ -146,7 +146,7 @@ OCPP Version: **2.0.1**
 type: vertical-stack
 cards:
   - type: entities
-    title: Elecq AU101
+    title: Elecq AU101/AE106
     entities:
       - entity: sensor.elecq_au101_status
       - entity: sensor.elecq_au101_charging_state
